@@ -8,11 +8,12 @@ input and manages output
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
 ////////////IMPORTS////////////
 import java.util.Scanner;
+import java.io.*;
 
 public class Engine {
 	//Public variables regarding character inventory
 	public static String strName = "", strInput = "", strOutput = "", strStory = "";
-	public static int intHP = 0;
+	public static int intHP = 100;
 	public static boolean blSword = false, blPotion = false, blTorch = false, blBook = false, blFinished = false, blThrowaway = false;
 	
 	//Public variables regarding character strLocation
@@ -44,7 +45,18 @@ public class Engine {
 				NewGame();
 			} else if(strInput.toLowerCase().contains("load")){
 				blThrowaway = true;
-				System.out.print("loading...");
+				System.out.println("Which adventurer would you like to load?");
+				do{
+					blThrowaway = false;
+					strInput = Input();
+					if (!(new File("Saves\\" + strInput + ".txt").exists())){
+						System.out.println("Invalid adventurer name!");
+					} else{
+						blThrowaway = true;
+						Load(strInput);
+					}
+				} while(!blThrowaway);
+				Game();
 			} else{
 				System.out.println("Invalid selection. Try again. (HINT: Say \"New\" or \"Load\")");
 			}
@@ -66,6 +78,8 @@ public class Engine {
 	
 	//Method for new game
 	public static void NewGame(){
+		blThrowaway = false; //reset throwaway bool
+		
 		strStory += "What is your name, adventurer?\n";
 		System.out.print(strStory);
 		
@@ -76,6 +90,149 @@ public class Engine {
 		strStory += strOutput + "\n";
 		
 		System.out.println(strOutput);
+		Game();
+	}
+	
+	//Method for saving
+	public static void Save() {
+		//Savefile object (uses current character name)
+		File saveFile = new File("Saves\\" + strName + ".txt");
+		
+		
+		if (!saveFile.exists()) {
+			System.out.println(strName + ".txt does not exist. Creating file!");
+			try { //In case the file can't be created
+				saveFile.createNewFile();
+				System.out.println(strName + ".txt created.");
+			} catch (IOException e) {
+				System.out.println("File can not be created!");
+				System.err.println("IOException: " + e.getMessage());
+			}
+		} else {
+			System.out.print(strName + ".txt found!");
+		}
+		//Just in case the file was not created, an if is required
+		if (saveFile.exists()) {
+			FileWriter out;
+			BufferedWriter writeFile;
+			
+			//System.out.println("Saving...");
+			
+			System.out.println("Saving...");
+			//Create output file stream and send text to stream
+			try {
+				//Open text stream
+				out = new FileWriter(saveFile);
+				writeFile = new BufferedWriter(out);
+				//Encrypt and write necessary contents
+				System.out.println("Saving location...");
+				writeFile.write(Crypto.Encrypt(strLocation));
+				writeFile.newLine();
+				System.out.println("Saving room...");
+				writeFile.write(Crypto.Encrypt(strRoom));
+				writeFile.newLine();
+				System.out.println("Saving description...");
+				writeFile.write(Crypto.Encrypt(strDesc));
+				writeFile.newLine();
+				System.out.println("Saving inventory...");
+				//Boolean to String "conversion"
+				if(blSword == true) {
+					writeFile.write(Crypto.Encrypt("True"));
+				} else{
+					writeFile.write(Crypto.Encrypt("False"));
+				}
+				writeFile.newLine();
+				if(blPotion == true){
+					writeFile.write(Crypto.Encrypt("True"));
+				} else{
+					writeFile.write(Crypto.Encrypt("False"));
+				}
+				writeFile.newLine();
+				if (blTorch == true){
+					writeFile.write(Crypto.Encrypt("True"));
+				} else{
+					writeFile.write(Crypto.Encrypt("False"));
+				}
+				writeFile.newLine();
+				if(blBook == true){
+					writeFile.write(Crypto.Encrypt("True"));
+				} else{
+					writeFile.write(Crypto.Encrypt("False"));
+				}
+				writeFile.newLine();
+				System.out.println("Saving health...");
+				writeFile.write(Crypto.Encrypt(intHP));
+				writeFile.newLine();
+				System.out.println("Saving coordinates...");
+				writeFile.write(Crypto.Encrypt(intX));
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(intY));
+				writeFile.newLine();
+				System.out.println("Saving story...");
+				writeFile.write(Crypto.Encrypt(strStory));
+				//Close text stream
+				writeFile.close();
+				out.close();
+			} catch (IOException e) {
+				System.out.println("Problem writing to file.");
+				System.err.println("IOException: " + e.getMessage());
+			}
+		}
+	}
+	
+	public static void Load(String name){
+		File loadFile = new File("Saves\\" + name + ".txt");
+		FileReader in;
+		BufferedReader ReadFile;
+		
+		try{
+			in = new FileReader(loadFile);
+			ReadFile = new BufferedReader(in);
+			
+			strName = name;
+			System.out.println("Loading location...");
+			strLocation = Crypto.Decrypt(ReadFile.readLine());
+			System.out.println("Loading room...");
+			strRoom = Crypto.Decrypt(ReadFile.readLine());
+			System.out.println("Loading description...");
+			strDesc = Crypto.Decrypt(ReadFile.readLine());
+			System.out.println("Loading Inventory...");
+			if (Crypto.Decrypt(ReadFile.readLine()).equals("True")){
+				blSword = true;
+			} else{
+				blSword = false;
+			} if (Crypto.Decrypt(ReadFile.readLine()).equals("True")){
+				blPotion = true;
+			} else{
+				blPotion = false;
+			} if (Crypto.Decrypt(ReadFile.readLine()).equals("True")){
+				blTorch = true;
+			} else{
+				blTorch = false;
+			} if (Crypto.Decrypt(ReadFile.readLine()).equals("True")){
+				blBook = true;
+			} else{
+				blBook = false;
+			}
+			System.out.println("Loading health...");
+			intHP = Crypto.intDecrypt(ReadFile.readLine());
+			System.out.println("Loading coordinates...");
+			intX = Crypto.intDecrypt(ReadFile.readLine());
+			intY = Crypto.intDecrypt(ReadFile.readLine());
+			
+			//Since story is multiline, it needs to be read until the end of the file (which ends in null)
+			String strLine = "";
+			System.out.println("Loading story...");
+			while ((strLine = ReadFile.readLine()) != null) {
+				strStory += Crypto.Decrypt(strLine);
+			}
+			
+			ReadFile.close();
+			in.close();
+		} catch(Exception e){
+			System.out.println("There was an error acquiring information.");
+		}
+		System.out.println(strStory);
 		Game();
 	}
 	
@@ -91,8 +248,23 @@ public class Engine {
 			strInput = Input();
 			strStory += "\n> " + strInput;
 			
-			//File saving
-			
+			//File saving/loading
+			if (strInput.toLowerCase().contains("save")){
+				Save();
+			} else if(strInput.toLowerCase().contains("load")){
+				blThrowaway = true;
+				System.out.println("Which adventurer would you like to load?");
+				do{
+					blThrowaway = false;
+					strInput = Input();
+					if (!(new File("Saves\\" + strInput + ".txt").exists())){
+						System.out.println("Invalid adventurer name!");
+					} else{
+						blThrowaway = true;
+						Load(strInput);
+					}
+				} while(!blThrowaway);
+			}
 			
 			//Inspecting
 			
@@ -107,7 +279,8 @@ public class Engine {
 			
 			
 			//Moving
-			if(strInput.toLowerCase().equals("n") || strInput.toLowerCase().contains("north")){
+			
+			else if(strInput.toLowerCase().equals("n") || strInput.toLowerCase().contains("north")){
 				//Determine strLocation
 				if(strLocation.equals("Kronwell")){
 					if(intY-1>=0) {//Can't walk through borders
@@ -197,7 +370,10 @@ public class Engine {
 						System.out.println("You can't go that way!");
 					}
 				}
-			} else if(strInput.equals("strLocation")){
+			}
+			
+			//Debug
+			else if(strInput.equals("Location")){
 				System.out.print("");
 			} else if(strInput.toLowerCase().equals("log")){
 				System.out.println(strStory);
