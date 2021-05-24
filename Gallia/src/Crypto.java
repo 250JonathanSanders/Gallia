@@ -113,9 +113,9 @@ public class Crypto {
 		try{
 			intFinal = Integer.parseInt(strDecrypt);
 		} catch(Exception e){
-			System.out.println("An unknown error occured.");
+			System.out.println("An unknown error occurred.");
 		}
-		
+
 		return(intFinal);
 	}
 }
