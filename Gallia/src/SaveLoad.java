@@ -85,6 +85,49 @@ public class SaveLoad {
 				writeFile.newLine();
 				writeFile.write(Crypto.Encrypt(Engine.intY));
 				writeFile.newLine();
+				System.out.println("Saving enemies...");
+				
+				//Monster status
+				if(Engine.blMon1Dead == true) {
+					writeFile.write(Crypto.Encrypt("True"));
+				} else{
+					writeFile.write(Crypto.Encrypt("False"));
+				}
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(Engine.intMonHP));
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(Engine.intMonHigh));
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(Engine.intMonLow));
+				writeFile.newLine();
+				//Monster2 status
+				if(Engine.blMon2Dead == true) {
+					writeFile.write(Crypto.Encrypt("True"));
+				} else{
+					writeFile.write(Crypto.Encrypt("False"));
+				}
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(Engine.intMon2HP));
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(Engine.intMon2High));
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(Engine.intMon2Low));
+				writeFile.newLine();
+				
+				//Monster3 status
+				if(Engine.blMon3Dead == true) {
+					writeFile.write(Crypto.Encrypt("True"));
+				} else{
+					writeFile.write(Crypto.Encrypt("False"));
+				}
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(Engine.intMon3HP));
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(Engine.intMon3High));
+				writeFile.newLine();
+				writeFile.write(Crypto.Encrypt(Engine.intMon3Low));
+				writeFile.newLine();
+				
 				System.out.println("Saving story...");
 				writeFile.write(Crypto.Encrypt(Engine.strStory));
 				//Close text stream
@@ -137,6 +180,37 @@ public class SaveLoad {
 			System.out.println("Loading coordinates...");
 			Engine.intX = Crypto.intDecrypt(ReadFile.readLine());
 			Engine.intY = Crypto.intDecrypt(ReadFile.readLine());
+			
+			System.out.println("Loading monsters...");
+			if(Crypto.Decrypt(ReadFile.readLine()).equals("True")) {
+				Engine.blMon1Dead = true;
+			} else{
+				Engine.blMon1Dead = false;
+			}
+			Engine.intMonHP = Crypto.intDecrypt(ReadFile.readLine());
+			Engine.intMonHigh = Crypto.intDecrypt(ReadFile.readLine());
+			Engine.intMonLow = Crypto.intDecrypt(ReadFile.readLine());
+			
+			
+ 			if(Crypto.Decrypt(ReadFile.readLine()).equals("True")) {
+				Engine.blMon2Dead = true;
+			} else{
+				Engine.blMon2Dead = false;
+			}
+			Engine.intMon2HP = Crypto.intDecrypt(ReadFile.readLine());
+			Engine.intMon2High = Crypto.intDecrypt(ReadFile.readLine());
+			Engine.intMon2Low = Crypto.intDecrypt(ReadFile.readLine());
+			
+			
+			if(Crypto.Decrypt(ReadFile.readLine()).equals("True")) {
+				Engine.blMon3Dead = true;
+			} else{
+				Engine.blMon3Dead = false;
+			}
+			Engine.intMon3HP = Crypto.intDecrypt(ReadFile.readLine());
+			Engine.intMon3High = Crypto.intDecrypt(ReadFile.readLine());
+			Engine.intMon3Low = Crypto.intDecrypt(ReadFile.readLine());
+			
 			
 			//Since story is multiline, it needs to be read until the end of the file (which ends in null)
 			String strLine = "";

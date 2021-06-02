@@ -40,7 +40,7 @@ public class Engine {
 
 	public static void main(String[] args){
 	
-		System.out.println("Welcome, adventurer! Would you like to start a new adventure, or load one in?");
+		System.out.print("Welcome, adventurer! Would you like to start a new adventure, or load one in?\n");
 		//Determine whether it's a new game or loading a game
 		while (!blThrowaway) {
 			strInput = Input();
@@ -50,12 +50,12 @@ public class Engine {
 				NewGame();
 			} else if(strInput.toLowerCase().contains("load")){
 				blThrowaway = true;
-				System.out.println("Which adventurer would you like to load?");
+				System.out.print("Which adventurer would you like to load?\n");
 				do{
 					blThrowaway = false;
 					strInput = Input();
 					if (!(new File("Saves\\" + strInput + ".txt").exists())){
-						System.out.println("Invalid adventurer name!");
+						System.out.print("Invalid adventurer name!\n");
 					} else{
 						blThrowaway = true;
 						SaveLoad.Load(strInput);
@@ -63,7 +63,7 @@ public class Engine {
 				} while(!blThrowaway);
 				Game();
 			} else{
-				System.out.println("Invalid selection. Try again. (HINT: Say \"New\" or \"Load\")");
+				System.out.print("Invalid selection. Try again. (HINT: Say \"New\" or \"Load\")\n");
 			}
 		}
 	}
@@ -73,7 +73,7 @@ public class Engine {
 		//Scanner object
 		Scanner scrInput = new Scanner(System.in);
 		
-		System.out.print("\n> ");
+		System.out.print("\n\n> ");
 		//This is redundant, but it's for an extra space under the > [input]
 		strInput = scrInput.nextLine();
 		System.out.print("\n");
@@ -83,12 +83,9 @@ public class Engine {
 	//Method for new game
 	public static void NewGame(){
 		//Generate random sword damage and potion values.
-		//intLow = (int) ((11) * Math.random());
-		//intHigh = (int) (( 25 - 11 + 1) * Math.random() + 11);
+		intLow = (int) ((11) * Math.random());
+		intHigh = (int) (( 25 - 11 + 1) * Math.random() + 11);
 		intPotion = (int) ((50 - 10 + 1) * Math.random() + 10);
-		intHigh = 100;
-		intLow = 99;
-		
 		
 		strStory += "What is your name, adventurer?\n";
 		System.out.print(strStory);
@@ -97,8 +94,9 @@ public class Engine {
 		strStory += "> " + strName + "\n";
 		
 		strOutput = "Alright, " + strName + "... That's an interesting name, by the way. Regardless, your story begins as such...\nYears ago, life was peaceful on the land of Gallia. However, one day the evil forces\ndecided to make themselves known. They had revived the orcs down at Kilburgh,\nreactivated Mt. Anbus, and destroyed the city of Brimmore from within.\nYour journey begins with you in Kronwell, your home town, on your way to save the world.\n";
-		strStory += strOutput + "\n";
-		System.out.println(strOutput);
+		strStory += strOutput + "\n\n";
+		strOutput += "\n\n";
+		System.out.print(strOutput);
 		
 		strOutput = "You're in your house. It's quite empty. Not even a bed. You sleep on the floor. Head South to go to the town center.\n";
 		strStory += strOutput + "\n";
@@ -193,24 +191,24 @@ public class Engine {
 	public static void Game(){
 		do{
 			//Print output and store it for loading
-			strStory += "\n" + strOutput;
-			System.out.println(strOutput + "\nX: " + intX + "\nY: " + intY);
+			strStory += "\n\n" + strOutput;
+			System.out.print(strOutput);
 			
 			//Input
 			strInput = Input();
-			strStory += "\n> " + strInput;
+			strStory += "\n\n> " + strInput;
 			
 			//File saving/loading
 			if (strInput.toLowerCase().contains("save")){
 				SaveLoad.Save();
 			} else if(strInput.toLowerCase().contains("load")){
 				blThrowaway = true;
-				System.out.println("Which adventurer would you like to load?");
+				System.out.print("Which adventurer would you like to load?\n");
 				do{
 					blThrowaway = false;
 					strInput = Input();
 					if (!(new File("Saves\\" + strInput + ".txt").exists())){
-						System.out.println("Invalid adventurer name!");
+						System.out.print("Invalid adventurer name!\n");
 					} else{
 						blThrowaway = true;
 						SaveLoad.Load(strInput);
@@ -556,7 +554,7 @@ public class Engine {
 		if (intHP == 0){
 			System.out.println(strOutput);
 		} else { //If player is not dead
-			System.out.println("lmaoooo");
+			strOutput = "\nYou proceed through the exit of the forest, into the entrance of Mt. Anbus.\nNo problems arise, and as you exit, there it is.\nThe eye. It's purple, with its glow a blinding gold. You walk\nup to it, and stab it. The world is free.";
 		}
 	}
 }
