@@ -4,7 +4,6 @@ Author: Jonathan Sanders
 Date: 17.05.21
 Purpose: Encrypt and decrypt
 text
-
 Notes: strChar and strChar2 are
 used because the primitive char
 class can not be added (char + char)
@@ -16,7 +15,7 @@ will only give an int.
 
 public class Crypto {
 	public static String Encrypt(String input){
-
+		
 		//Loop length, two character int value numbers
 		int intLength = 0, intChar = 0, intChar2 = 0, intActive = 0;
 		//Encrypted string, the characters in string form
@@ -27,9 +26,9 @@ public class Crypto {
 		intLength = input.length();
 		//Actual encryption loop
 		for(int i = 0; i < intLength; i++){
-			//Random character
+			//Random character, shift it up 10
 			intChar = (int) ((122 - 65) * Math.random() + 65) + 10;
-			//Cant be strChar = (char) intChar, since strChar is string.
+			//Cant be strChar = (char) intChar, since strChar is string. and conversion doesn't work well
 			strChar += (char) intChar;
 			//Same thing as above
 			intChar2 = (int) ((122 - 65) * Math.random() + 65) + 10;
@@ -61,7 +60,7 @@ public class Crypto {
 		return(strDecrypt);
 	}
 	
-	//Int encryption, converts into string using wrapper class
+	//Int encryption, converts into string using wrapper class, but otherwise just does the same thing
 	public static String Encrypt(int input){
 		String strInput = "";
 		strInput = String.valueOf(input);
@@ -113,9 +112,9 @@ public class Crypto {
 		try{
 			intFinal = Integer.parseInt(strDecrypt);
 		} catch(Exception e){
-			System.out.println("An unknown error occurred.");
+			System.out.println("An unknown error occurred."); //in case the string can't be turned into an integer
 		}
-
+		
 		return(intFinal);
 	}
 }

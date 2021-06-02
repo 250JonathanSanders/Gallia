@@ -3,7 +3,8 @@ Name: SaveLoad.java
 Author: Jonathan Sanders
 Date: 24.05.21
 Purpose: Saving and loading
-handling for the game
+handling for the game using
+encryption from Crypto class
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
 ////////////IMPORTS////////////
 
@@ -29,7 +30,7 @@ public class SaveLoad {
 		} else {
 			System.out.print(Engine.strName + ".txt found!");
 		}
-		//Another if is required, in case the file could not be created
+		//Another if is required, in case the file could not be created this will be skipped
 		if (saveFile.exists()) {
 			FileWriter out;
 			BufferedWriter writeFile;
